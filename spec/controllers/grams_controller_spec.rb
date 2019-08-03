@@ -10,6 +10,12 @@ RSpec.describe GramsController, type: :controller do
 
 
   describe "grams#new action" do
+    it "should require users to be logged in" do
+      post :create, params: { gram: { message: "Hello" } }
+      expect(response).to redirect_to new_user_session_path
+    end
+
+
     it "should successfully show the new form" do
       user = User.create(
         email:                 'fakeuser@gmail.com',
@@ -38,6 +44,7 @@ RSpec.describe GramsController, type: :controller do
 
       gram = Gram.last
       expect(gram.message).to eq("Hello!")
+      expect(gram.user).to eq(user)
     end
 
     it "should properly deal with validation errors" do
